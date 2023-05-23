@@ -1,6 +1,7 @@
 name: Django CI-CD
 
 on:
+  workflow_dispatch:
   push:
     branches: [ "master" ]
   pull_request:
@@ -8,12 +9,11 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
     strategy:
       max-parallel: 4
       matrix:
-        python-version: [3.7, 3.8, 3.9]
+        python-version: [3.9]
 
     steps:
     - uses: actions/checkout@v3
@@ -54,4 +54,5 @@ jobs:
         script: |
           sudo systemctl restart nginx
           cd /home/ubuntu/app
-          sudo docker run  -p 8000:8000 ec2-ci-cd:latest
+          sudo docker build -t ec2-ci-cd:latest .
+          sudo docker run -d -p 8000:8000 ec2-ci-cd:latest
